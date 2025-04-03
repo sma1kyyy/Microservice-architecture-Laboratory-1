@@ -63,7 +63,7 @@ ________________________________________________________________________________
 ![Static Badge](https://img.shields.io/badge/Python-3.12-green?style=flat-square&logo=Python&logoColor=yellow&label=Python&labelColor=%23000000%09)
 ![Static Badge](https://img.shields.io/badge/Docker-blue?style=flat-square&logo=DOCKER&logoColor=white)
 ![Static Badge](https://img.shields.io/badge/Nginx-009639?logo=nginx&logoColor=white&style=flat-square)
-![Static Badge](https://img.shields.io/badge/Flask-000000?style=flat-square&logo=Flask&logoColor=white)
+![Static Badge](https://img.shields.io/badge/FastAPI-000000?style=flat-square&logo=FastAPI&logoColor=white)
 
 ---
 ## Описание
