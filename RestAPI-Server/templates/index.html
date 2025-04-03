@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REST API Server | Контакты и Группы</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4285F4;
+            --primary-dark: #3367D6;
+            --secondary: #34A853;
+            --danger: #EA4335;
+            --warning: #FBBC05;
+            --light: #F8F9FA;
+            --dark: #202124;
+            --gray: #5F6368;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f5f5f5;
+            color: var(--dark);
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .subtitle {
+            font-weight: 300;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 2rem;
+        }
+        
+        .api-section {
+            margin-bottom: 3rem;
+        }
+        
+        h2 {
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--light);
+        }
+        
+        .endpoint-card {
+            background: var(--light);
+            border-radius: 6px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .endpoint-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .method {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 4px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            margin-right: 1rem;
+            color: white;
+        }
+        
+        .get { background: var(--secondary); }
+        .post { background: var(--warning); color: var(--dark); }
+        .put { background: var(--primary); }
+        .delete { background: var(--danger); }
+        
+        .path {
+            font-family: 'Courier New', monospace;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+        
+        .description {
+            color: var(--gray);
+            margin-bottom: 1rem;
+        }
+        
+        .try-btn {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: 500;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        
+        .try-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        
+        .request-response {
+            margin-top: 1.5rem;
+            background: white;
+            border-radius: 6px;
+            border: 1px solid #e0e0e0;
+            overflow: hidden;
+        }
+        
+        .tab-header {
+            display: flex;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .tab {
+            padding: 0.7rem 1.5rem;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--gray);
+        }
+        
+        .tab.active {
+            color: var(--primary);
+            border-bottom: 2px solid var(--primary);
+        }
+        
+        .tab-content {
+            padding: 1.5rem;
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        pre {
+            background: #f8f8f8;
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--gray);
+            font-size: 0.9rem;
+            border-top: 1px solid #e0e0e0;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                border-radius: 0;
+            }
+            
+            header {
+                padding: 1.5rem;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>REST API Сервер</h1>
+            <p class="subtitle">Управление контактами и группами</p>
+        </header>
+        
+        <div class="content">
+            <div class="api-section">
+                <h2>Контакты API</h2>
+                
+                <!-- Create Contact -->
+                <div class="endpoint-card">
+                    <div class="endpoint-header">
+                        <span class="method post">POST</span>
+                        <span class="path">/api/v1/contact</span>
+                    </div>
+                    <p class="description">Создание нового контакта</p>
+                    <button class="try-btn" onclick="tryEndpoint('contact', 'post')">Попробовать</button>
+                    
+                    <div class="request-response">
+                        <div class="tab-header">
+                            <div class="tab active" onclick="switchTab(this, 'contact-post-request')">Запрос</div>
+                            <div class="tab" onclick="switchTab(this, 'contact-post-response')">Ответ</div>
+                        </div>
+                        <div class="tab-content active" id="contact-post-request">
+                            <pre>{
+  "ID": 0,
+  "Username": "string",
+  "GivenName": "string",
+  "FamilyName": "string",
+  "Phone": [
+    {
+      "TypeID": 0,
+      "CountryCode": 0,
+      "Operator": 0,
+      "Number": 0
+    }
+  ],
+  "Email": ["string"],
+  "Birthdate": "2025-03-31"
+}</pre>
+                        </div>
+                        <div class="tab-content" id="contact-post-response">
+                            <pre>{
+  "ID": 1,
+  "Username": "example_user",
+  "GivenName": "Иван",
+  "FamilyName": "Иванов",
+  "Phone": [
+    {
+      "TypeID": 1,
+      "CountryCode": 7,
+      "Operator": 901,
+      "Number": 1234567
+    }
+  ],
+  "Email": ["ivan@example.com"],
+  "Birthdate": "1990-01-01"
+}</pre>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Get All Contacts -->
+                <div class="endpoint-card">
+                    <div class="endpoint-header">
+                        <span class="method get">GET</span>
+                        <span class="path">/api/v1/contact</span>
+                    </div>
+                    <p class="description">Получить список всех контактов</p>
+                    <button class="try-btn" onclick="tryEndpoint('contact', 'get')">Попробовать</button>
+                    
+                    <div class="request-response">
+                        <div class="tab-header">
+                            <div class="tab active" onclick="switchTab(this, 'contact-get-response')">Ответ</div>
+                        </div>
+                        <div class="tab-content active" id="contact-get-response">
+                            <pre>[
+  {
+    "ID": 1,
+    "Username": "example_user",
+    "GivenName": "Иван",
+    "FamilyName": "Иванов",
+    "Phone": [...],
+    "Email": [...],
+    "Birthdate": "1990-01-01"
+  },
+  ...
+]</pre>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Другие методы для контактов -->
+                <!-- Можно добавить аналогичные блоки для GET /id, PUT, DELETE -->
+                
+            </div>
+            
+            <div class="api-section">
+                <h2>Группы API</h2>
+                
+                <!-- Create Group -->
+                <div class="endpoint-card">
+                    <div class="endpoint-header">
+                        <span class="method post">POST</span>
+                        <span class="path">/api/v1/group</span>
+                    </div>
+                    <p class="description">Создание новой группы</p>
+                    <button class="try-btn" onclick="tryEndpoint('group', 'post')">Попробовать</button>
+                    
+                    <div class="request-response">
+                        <div class="tab-header">
+                            <div class="tab active" onclick="switchTab(this, 'group-post-request')">Запрос</div>
+                            <div class="tab" onclick="switchTab(this, 'group-post-response')">Ответ</div>
+                        </div>
+                        <div class="tab-content active" id="group-post-request">
+                            <pre>{
+  "ID": 0,
+  "Title": "string",
+  "Description": "string",
+  "Contacts": [0]
+}</pre>
+                        </div>
+                        <div class="tab-content" id="group-post-response">
+                            <pre>{
+  "ID": 1,
+  "Title": "Разработчики",
+  "Description": "Команда разработки",
+  "Contacts": [1, 2, 3]
+}</pre>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Get All Groups -->
+                <div class="endpoint-card">
+                    <div class="endpoint-header">
+                        <span class="method get">GET</span>
+                        <span class="path">/api/v1/group</span>
+                    </div>
+                    <p class="description">Получить список всех групп</p>
+                    <button class="try-btn" onclick="tryEndpoint('group', 'get')">Попробовать</button>
+                    
+                    <div class="request-response">
+                        <div class="tab-header">
+                            <div class="tab active" onclick="switchTab(this, 'group-get-response')">Ответ</div>
+                        </div>
+                        <div class="tab-content active" id="group-get-response">
+                            <pre>[
+  {
+    "ID": 1,
+    "Title": "Разработчики",
+    "Description": "Команда разработки",
+    "Contacts": [1, 2, 3]
+  },
+  ...
+]</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Лабораторная работа №1 по REST API | Куликов Кирилл | 2025</p>
+            <p>Сервер работает на порту 6080, балансировка через Nginx</p>
+        </footer>
+    </div>
+    
+    <script>
+        function switchTab(tabElement, contentId) {
+            // Находим родительский элемент с вкладками
+            const tabContainer = tabElement.closest('.request-response');
+            
+            // Скрываем все вкладки
+            tabContainer.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            tabContainer.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Показываем выбранную вкладку
+            tabElement.classList.add('active');
+            document.getElementById(contentId).classList.add('active');
+        }
+        
+        function tryEndpoint(type, method) {
+            let url = `/api/v1/${type}`;
+            let options = {};
+            
+            switch(method) {
+                case 'get':
+                    if (type === 'contact') {
+                        fetch(url)
+                            .then(response => response.json())
+                            .then(data => console.log('Contacts:', data))
+                            .catch(error => console.error('Error:', error));
+                    } else {
+                        fetch(url)
+                            .then(response => response.json())
+                            .then(data => console.log('Groups:', data))
+                            .catch(error => console.error('Error:', error));
+                    }
+                    break;
+                    
+                case 'post':
+                    const payload = type === 'contact' ? {
+                        ID: 0,
+                        Username: "new_user",
+                        GivenName: "Новый",
+                        FamilyName: "Пользователь",
+                        Phone: [{
+                            TypeID: 1,
+                            CountryCode: 7,
+                            Operator: 901,
+                            Number: 7654321
+                        }],
+                        Email: ["new@example.com"],
+                        Birthdate: "2000-01-01"
+                    } : {
+                        ID: 0,
+                        Title: "Новая группа",
+                        Description: "Описание группы",
+                        Contacts: []
+                    };
+                    
+                    options = {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(payload)
+                    };
+                    
+                    fetch(url, options)
+                        .then(response => response.json())
+                        .then(data => console.log('Created:', data))
+                        .catch(error => console.error('Error:', error));
+                    break;
+            }
+            
+            alert(`Выполняется ${method.toUpperCase()} запрос к ${url}\nРезультат в консоли`);
+        }
+    </script>
+</body>
+</html>
